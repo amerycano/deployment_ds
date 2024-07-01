@@ -22,23 +22,19 @@ petal_width = st.sidebar.number_input("petal width (cm)", 0.1, 2.5, 0.2)
 
 # Button to trigger prediction
 if st.button("Predict"):
-# Getting Prediction from model
+    # Getting Prediction from model
     inp = np.array([sepal_length, sepal_width, petal_length, petal_width])
     inp = np.expand_dims(inp, axis=0)
     prediction = model.predict(inp)
-   
+
     # Show Results when the button is clicked
+    st.write('''
+    ## Results
+    Following is the probability of each class
+    ''')
+
+    df = pd.DataFrame(prediction, index=['result'], columns=species)
+    st.dataframe(df)
     result = species[np.argmax(prediction)]
     st.write("**This flower belongs to " + result + " class**")
-    
-    # Display corresponding image based on prediction
-    if result == 'setosa':
-        image = Image.open('setosa.jpg')  # Replace with your image file path
-        st.image(image, caption='Iris Setosa', use_column_width=True)
-    elif result == 'versicolor':
-        image = Image.open('versicolor.jpg')  # Replace with your image file path
-        st.image(image, caption='Iris Versicolor', use_column_width=True)
-    elif result == 'virginica':
-        image = Image.open('virginica.jpg')  # Replace with your image file path
-        st.image(image, caption='Iris Virginica', use_column_width=True)
-
+    st.image(image[np.argmax(prediction)])
